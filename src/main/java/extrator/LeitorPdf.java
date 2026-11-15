@@ -8,26 +8,21 @@ import java.nio.file.Path;
 
 public class LeitorPdf {
 
-    public static void ler(Path caminho) throws Exception {
+    public static void ler(Path caminho, Relatorio relatorio) throws Exception {
         try (PDDocument documento = Loader.loadPDF(caminho.toFile())) {
             PDDocumentInformation info = documento.getDocumentInformation();
+            String secao = "Documento PDF";
 
-            System.out.println();
-            System.out.println("=== Documento PDF ===");
-            boolean achou = false;
-            achou |= Saida.imprimir("Título", info.getTitle());
-            achou |= Saida.imprimir("Autor", info.getAuthor());
-            achou |= Saida.imprimir("Assunto", info.getSubject());
-            achou |= Saida.imprimir("Palavras-chave", info.getKeywords());
-            achou |= Saida.imprimir("Criado com", info.getCreator());
-            achou |= Saida.imprimir("Gerado por", info.getProducer());
-            achou |= Saida.imprimir("Criação", Saida.data(info.getCreationDate()));
-            achou |= Saida.imprimir("Modificação", Saida.data(info.getModificationDate()));
-            Saida.imprimir("Páginas", String.valueOf(documento.getNumberOfPages()));
-            Saida.imprimir("Criptografado", documento.isEncrypted() ? "sim" : "não");
-            if (!achou) {
-                Saida.semDados();
-            }
+            relatorio.adicionar(secao, "Título", info.getTitle());
+            relatorio.adicionar(secao, "Autor", info.getAuthor());
+            relatorio.adicionar(secao, "Assunto", info.getSubject());
+            relatorio.adicionar(secao, "Palavras-chave", info.getKeywords());
+            relatorio.adicionar(secao, "Criado com", info.getCreator());
+            relatorio.adicionar(secao, "Gerado por", info.getProducer());
+            relatorio.adicionar(secao, "Criação", Saida.data(info.getCreationDate()));
+            relatorio.adicionar(secao, "Modificação", Saida.data(info.getModificationDate()));
+            relatorio.adicionar(secao, "Páginas", String.valueOf(documento.getNumberOfPages()));
+            relatorio.adicionar(secao, "Criptografado", documento.isEncrypted() ? "sim" : "não");
         }
     }
 }
