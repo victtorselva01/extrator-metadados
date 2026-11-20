@@ -12,29 +12,31 @@ Files often reveal more than their owners expect: the device that took a photo, 
 - **PDF**: title, author, subject, keywords, creating application, PDF producer, creation and modification dates, page count, encryption status
 - **Word (.docx)**: title, author, last modified by, creation and modification dates, revision number, application name and version, company
 - **Two output formats**: human-readable text or JSON (`--json`)
-**Full dump** of every metadata tag for images (--tudo)
+- **Full dump** of every metadata tag found in images (`--tudo`)
 
 ## Requirements
 
 - JDK 25 or newer
-- Maven 3.9 or newer
+- Maven 3.9 or newer (only to build from source)
+
+## Download
+
+Prefer not to build it yourself? Download the latest JAR from the [Releases](https://github.com/victtorselva01/extrator-metadados/releases) page.
+
+To verify a download, compare its SHA-256 (`Get-FileHash <file> -Algorithm SHA256` on Windows, `sha256sum <file>` on Linux) with the value in the release notes.
 
 ## Build
 
 ```
-mvn compile dependency:copy-dependencies
+mvn package
 ```
+
+This runs the tests and creates a single runnable JAR at `target/extrator-metadados-0.1.0.jar`.
 
 ## Usage
 
 ```
-java -cp "target/classes:target/dependency/*" extrator.Main <file> [--tudo] [--json]
-```
-
-On Windows, use `;` instead of `:` in the classpath:
-
-```
-java -cp "target\classes;target\dependency\*" extrator.Main <file> [--tudo] [--json]
+java -jar target/extrator-metadados-0.1.0.jar <file> [--tudo] [--json]
 ```
 
 | Option   | Description                                              |
@@ -45,8 +47,25 @@ java -cp "target\classes;target\dependency\*" extrator.Main <file> [--tudo] [--j
 ### Example
 
 ```
-java -cp "target\classes;target\dependency\*" extrator.Main report.pdf --json
+java -jar target/extrator-metadados-0.1.0.jar report.pdf
 ```
+
+```
+=== Arquivo ===
+Nome: report.pdf
+Tamanho: 77799 bytes
+
+=== Documento PDF ===
+Título: Victor Silva
+Criado com: Chromium
+Gerado por: Skia/PDF m157
+Criação: 2026-11-15 09:53:11 Z
+Modificação: 2026-11-15 09:53:11 Z
+Páginas: 2
+Criptografado: não
+```
+
+With `--json`:
 
 ```json
 {
@@ -55,10 +74,11 @@ java -cp "target\classes;target\dependency\*" extrator.Main report.pdf --json
     "Tamanho": "77799 bytes"
   },
   "Documento PDF": {
-    "Título": "Quarterly report",
+    "Título": "Victor Silva",
     "Criado com": "Chromium",
     "Gerado por": "Skia/PDF m157",
     "Criação": "2026-11-15 09:53:11 Z",
+    "Modificação": "2026-11-15 09:53:11 Z",
     "Páginas": "2",
     "Criptografado": "não"
   }
@@ -88,6 +108,8 @@ Metadata can contain personal information such as a person's location. Use this 
 mvn test
 ```
 
+The tests also run automatically on every push through GitHub Actions.
+
 ## Tech stack
 
 - Java 25, Maven
@@ -95,11 +117,15 @@ mvn test
 - [Apache PDFBox](https://pdfbox.apache.org/) for PDFs
 - [Gson](https://github.com/google/gson) for JSON output
 - JUnit 5 for tests
+- GitHub Actions for continuous integration
 
 ## Roadmap
 
-- [ ] Single runnable `.jar`
+- [x] Single runnable `.jar`
+- [x] Continuous integration and tagged release
 - [ ] English labels and a language option
+- [ ] SHA-256 hash of the analyzed file in the report
+- [ ] Detection of the real file type (magic bytes) and extension mismatch warnings
 - [ ] Support for `.xlsx` and `.pptx`
 - [ ] Batch mode for whole folders
 
