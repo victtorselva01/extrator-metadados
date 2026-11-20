@@ -1,5 +1,7 @@
 # extrator-metadados
 
+![CI](https://github.com/victtorselva01/extrator-metadados/actions/workflows/ci.yml/badge.svg)
+
 A command-line tool written in Java that extracts metadata from images, PDFs and Word documents, with a focus on what is useful for OSINT (open-source intelligence) investigations.
 
 Files often reveal more than their owners expect: the device that took a photo, the exact time and place, the software that generated a PDF, the author of a document. This tool collects that information in one readable report.
