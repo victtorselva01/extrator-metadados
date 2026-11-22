@@ -4,7 +4,7 @@
 
 A command-line tool written in Java that extracts metadata from images, PDFs and Word documents, with a focus on what is useful for OSINT (open-source intelligence) investigations.
 
-Files often reveal more than their owners expect: the device that took a photo, the exact time and place, the software that generated a PDF, the author of a document. This tool collects that information in one readable report.
+Files often reveal more than their owners expect: the device that took a photo, the exact time and place, the software that generated a PDF, the author of a document. This tool collects that information in one readable report, in English, Portuguese or Spanish.
 
 ## Features
 
@@ -12,7 +12,8 @@ Files often reveal more than their owners expect: the device that took a photo, 
 - **PDF**: title, author, subject, keywords, creating application, PDF producer, creation and modification dates, page count, encryption status
 - **Word (.docx)**: title, author, last modified by, creation and modification dates, revision number, application name and version, company
 - **Two output formats**: human-readable text or JSON (`--json`)
-- **Full dump** of every metadata tag found in images (`--tudo`)
+- **Three languages**: English (default), Portuguese and Spanish (`--lang`)
+- **Full dump** of every metadata tag found in images (`--all`)
 
 ## Requirements
 
@@ -31,61 +32,62 @@ To verify a download, compare its SHA-256 (`Get-FileHash <file> -Algorithm SHA25
 mvn package
 ```
 
-This runs the tests and creates a single runnable JAR at `target/extrator-metadados-0.1.0.jar`.
+This runs the tests and creates a single runnable JAR at `target/extrator-metadados-0.2.0.jar`.
 
 ## Usage
 
 ```
-java -jar target/extrator-metadados-0.1.0.jar <file> [--tudo] [--json]
+java -jar target/extrator-metadados-0.2.0.jar <file> [--all] [--json] [--lang en|pt|es]
 ```
 
-| Option   | Description                                              |
-|----------|----------------------------------------------------------|
-| `--tudo` | Also print every metadata tag found (images only)         |
-| `--json` | Print the report as JSON instead of plain text            |
+| Option              | Description                                                            |
+|---------------------|------------------------------------------------------------------------|
+| `--all`             | Also print every metadata tag found (images only). `--tudo` also works |
+| `--json`            | Print the report as JSON instead of plain text                         |
+| `--lang en\|pt\|es` | Language of the report (default: `en`)                                 |
 
 ### Example
 
 ```
-java -jar target/extrator-metadados-0.1.0.jar report.pdf
+java -jar target/extrator-metadados-0.2.0.jar report.pdf
 ```
 
 ```
-=== Arquivo ===
-Nome: report.pdf
-Tamanho: 77799 bytes
+=== File ===
+Name: report.pdf
+Size: 77799 bytes
 
-=== Documento PDF ===
-Título: Victor Silva
-Criado com: Chromium
-Gerado por: Skia/PDF m157
-Criação: 2026-11-15 09:53:11 Z
-Modificação: 2026-11-15 09:53:11 Z
-Páginas: 2
-Criptografado: não
+=== PDF document ===
+Title: Victor Silva
+Created with: Chromium
+Produced by: Skia/PDF m157
+Created: 2026-11-15 09:53:11 Z
+Modified: 2026-11-15 09:53:11 Z
+Pages: 2
+Encrypted: no
 ```
 
 With `--json`:
 
 ```json
 {
-  "Arquivo": {
-    "Nome": "report.pdf",
-    "Tamanho": "77799 bytes"
+  "File": {
+    "Name": "report.pdf",
+    "Size": "77799 bytes"
   },
-  "Documento PDF": {
-    "Título": "Victor Silva",
-    "Criado com": "Chromium",
-    "Gerado por": "Skia/PDF m157",
-    "Criação": "2026-11-15 09:53:11 Z",
-    "Modificação": "2026-11-15 09:53:11 Z",
-    "Páginas": "2",
-    "Criptografado": "não"
+  "PDF document": {
+    "Title": "Victor Silva",
+    "Created with": "Chromium",
+    "Produced by": "Skia/PDF m157",
+    "Created": "2026-11-15 09:53:11 Z",
+    "Modified": "2026-11-15 09:53:11 Z",
+    "Pages": "2",
+    "Encrypted": "no"
   }
 }
 ```
 
-> The report labels are currently in Portuguese. Localization is on the roadmap.
+The same report in Spanish (`--lang es`) uses "Archivo", "Documento PDF", "Creado con", "Cifrado" and so on.
 
 ## Why it matters (OSINT context)
 
@@ -108,7 +110,7 @@ Metadata can contain personal information such as a person's location. Use this 
 mvn test
 ```
 
-The tests also run automatically on every push through GitHub Actions.
+The tests also run automatically on every push through GitHub Actions. One of them checks that the English, Portuguese and Spanish message files always have exactly the same keys.
 
 ## Tech stack
 
@@ -123,7 +125,7 @@ The tests also run automatically on every push through GitHub Actions.
 
 - [x] Single runnable `.jar`
 - [x] Continuous integration and tagged release
-- [ ] English labels and a language option
+- [x] English, Portuguese and Spanish report labels
 - [ ] SHA-256 hash of the analyzed file in the report
 - [ ] Detection of the real file type (magic bytes) and extension mismatch warnings
 - [ ] Support for `.xlsx` and `.pptx`
