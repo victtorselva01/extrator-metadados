@@ -7,20 +7,30 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
-            System.err.println("Uso: java extrator.Main <arquivo> [--tudo] [--json]");
-            return;
-        }
-
-        Path caminho = Path.of(args[0]);
-
-        if (!Files.exists(caminho)) {
-            System.err.println("Erro: arquivo não encontrado: " + caminho);
+            System.err.println(Mensagens.get("usage"));
             return;
         }
 
         List<String> opcoes = List.of(args).subList(1, args.length);
-        boolean tudo = opcoes.contains("--tudo");
+
+        int posicaoIdioma = opcoes.indexOf("--lang");
+        if (posicaoIdioma >= 0) {
+            String codigo = posicaoIdioma + 1 < opcoes.size() ? opcoes.get(posicaoIdioma + 1) : "";
+            if (!Mensagens.definirIdioma(codigo)) {
+                System.err.println(Mensagens.get("error.badLang", codigo));
+                return;
+            }
+        }
+
+        boolean tudo = opcoes.contains("--all") || opcoes.contains("--tudo");
         boolean json = opcoes.contains("--json");
+
+        Path caminho = Path.of(args[0]);
+
+        if (!Files.exists(caminho)) {
+            System.err.println(Mensagens.get("error.notFound", caminho));
+            return;
+        }
 
         String nome = caminho.getFileName().toString();
         String extensao = nome.contains(".")
@@ -28,8 +38,9 @@ public class Main {
                 : "";
 
         Relatorio relatorio = new Relatorio();
-        relatorio.adicionar("Arquivo", "Nome", nome);
-        relatorio.adicionar("Arquivo", "Tamanho", Files.size(caminho) + " bytes");
+        String secaoArquivo = Mensagens.get("file.section");
+        relatorio.adicionar(secaoArquivo, Mensagens.get("file.name"), nome);
+        relatorio.adicionar(secaoArquivo, Mensagens.get("file.size"), Files.size(caminho) + " bytes");
 
         switch (extensao) {
             case "jpg", "jpeg", "png", "heic", "heif", "tif", "tiff", "webp" ->
@@ -37,7 +48,7 @@ public class Main {
             case "pdf" -> LeitorPdf.ler(caminho, relatorio);
             case "docx" -> LeitorDocx.ler(caminho, relatorio);
             default -> {
-                System.err.println("Formato não suportado: ." + extensao);
+                System.err.println(Mensagens.get("error.unsupported", extensao));
                 return;
             }
         }

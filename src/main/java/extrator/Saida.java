@@ -20,7 +20,7 @@ public class Saida {
 
             System.out.println("=== " + secao.getKey() + " ===");
             if (secao.getValue().isEmpty()) {
-                System.out.println("Nenhum dado encontrado.");
+                System.out.println(Mensagens.get("out.noData"));
             } else {
                 for (Map.Entry<String, String> campo : secao.getValue().entrySet()) {
                     System.out.println(campo.getKey() + ": " + campo.getValue());

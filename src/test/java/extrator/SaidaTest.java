@@ -42,7 +42,7 @@ class SaidaTest {
 
         assertTrue(saida.contains("=== Dispositivo ==="));
         assertTrue(saida.contains("Modelo: iPhone 11"));
-        assertTrue(saida.contains("Nenhum dado encontrado."));
+        assertTrue(saida.contains(Mensagens.get("out.noData")));
     }
 
     @Test

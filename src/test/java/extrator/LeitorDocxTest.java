@@ -47,8 +47,11 @@ class LeitorDocxTest {
 
         LeitorDocx.ler(criarDocx(core, app), relatorio);
 
-        assertEquals("Maria Souza", relatorio.getSecoes().get("Documento Word").get("Autor"));
-        assertEquals("Microsoft Office Word", relatorio.getSecoes().get("Documento Word").get("Programa"));
+        String secao = Mensagens.get("docx.section");
+        assertEquals("Maria Souza",
+                relatorio.getSecoes().get(secao).get(Mensagens.get("docx.author")));
+        assertEquals("Microsoft Office Word",
+                relatorio.getSecoes().get(secao).get(Mensagens.get("docx.application")));
     }
 
     @Test

@@ -11,27 +11,31 @@ import java.util.zip.ZipFile;
 
 public class LeitorDocx {
 
+    private static String t(String chave) {
+        return Mensagens.get(chave);
+    }
+
     public static void ler(Path caminho, Relatorio relatorio) throws Exception {
         try (ZipFile zip = new ZipFile(caminho.toFile())) {
             Document core = abrir(zip, "docProps/core.xml");
             Document app = abrir(zip, "docProps/app.xml");
-            String secao = "Documento Word";
+            String secao = t("docx.section");
 
             relatorio.criarSecao(secao);
             if (core != null) {
-                relatorio.adicionar(secao, "Título", texto(core, "dc:title"));
-                relatorio.adicionar(secao, "Autor", texto(core, "dc:creator"));
-                relatorio.adicionar(secao, "Última modificação por", texto(core, "cp:lastModifiedBy"));
-                relatorio.adicionar(secao, "Assunto", texto(core, "dc:subject"));
-                relatorio.adicionar(secao, "Palavras-chave", texto(core, "cp:keywords"));
-                relatorio.adicionar(secao, "Criação", texto(core, "dcterms:created"));
-                relatorio.adicionar(secao, "Modificação", texto(core, "dcterms:modified"));
-                relatorio.adicionar(secao, "Revisão", texto(core, "cp:revision"));
+                relatorio.adicionar(secao, t("docx.title"), texto(core, "dc:title"));
+                relatorio.adicionar(secao, t("docx.author"), texto(core, "dc:creator"));
+                relatorio.adicionar(secao, t("docx.lastModifiedBy"), texto(core, "cp:lastModifiedBy"));
+                relatorio.adicionar(secao, t("docx.subject"), texto(core, "dc:subject"));
+                relatorio.adicionar(secao, t("docx.keywords"), texto(core, "cp:keywords"));
+                relatorio.adicionar(secao, t("docx.created"), texto(core, "dcterms:created"));
+                relatorio.adicionar(secao, t("docx.modified"), texto(core, "dcterms:modified"));
+                relatorio.adicionar(secao, t("docx.revision"), texto(core, "cp:revision"));
             }
             if (app != null) {
-                relatorio.adicionar(secao, "Programa", texto(app, "Application"));
-                relatorio.adicionar(secao, "Versão do programa", texto(app, "AppVersion"));
-                relatorio.adicionar(secao, "Empresa", texto(app, "Company"));
+                relatorio.adicionar(secao, t("docx.application"), texto(app, "Application"));
+                relatorio.adicionar(secao, t("docx.appVersion"), texto(app, "AppVersion"));
+                relatorio.adicionar(secao, t("docx.company"), texto(app, "Company"));
             }
         }
     }
